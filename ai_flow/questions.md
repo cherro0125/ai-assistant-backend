@@ -71,3 +71,31 @@ This document records every clarification question asked during planning (via Cl
 **Answer:** *Pending — not yet answered.*
 
 **Change made:** None yet. This remains an open item in the "Open Questions / Risks" section of `ai_flow/detailed_plan.md` until answered.
+
+---
+
+## 8. WEATHER_API_KEY handling
+
+**Question:** `mcp-weather` requires a free `WEATHER_API_KEY` from weatherapi.com to function at all — this has to be obtained by you, not Claude Code. How should it be handled?
+
+**Answer:** Combined approach: store it in a `.env` file; commit an `example.env` with a placeholder; README should include step-by-step instructions for getting a free key and where to put it.
+
+**Change made:** Added to `ai_flow/tech_stack.md` under "Decisions Made (follow-up)" and updated the "External MCP Server" table row. This will also need to be reflected in `README.md` once implementation docs are written (sign-up steps + `.env` setup).
+
+---
+
+## 9. Weather MCP server deployment (stdio transport constraint)
+
+**Question:** `mcp-weather` only supports stdio transport, so it can't run as its own Docker Compose network service like the custom countries MCP server can. How should it be deployed?
+
+**Answer:** Bundle Node.js into the main app's Docker image so the Spring Boot app can spawn `mcp-weather` as a local stdio subprocess.
+
+**Change made:** Added to `ai_flow/tech_stack.md` under "Decisions Made (follow-up)" — confirms the multi-stage Docker build approach (JRE + Node runtime in the same final image) so `docker compose up` remains a single entry point.
+
+---
+
+## 10. Build tool correction (Maven → Gradle)
+
+**Not a question Claude Code asked** — a correction to a default I picked. `tech_stack.md` initially chose Maven with the reasoning "no strong reason to prefer Gradle here." You pointed out that by that same logic, there's also no strong reason to prefer Maven, and you'd rather use Gradle.
+
+**Change made:** Updated the Build tool row in `ai_flow/tech_stack.md` from Maven to Gradle (Kotlin DSL).

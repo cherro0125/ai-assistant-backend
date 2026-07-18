@@ -24,9 +24,12 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
   *Done when:* `./chat.sh "hello"` prints a readable answer without manual curl flags.
   *Notes:* Initially used `python3` for JSON encode/decode, then reworked to pure `sed` (no `python3` dependency) per follow-up request. Handles quote/backslash escaping correctly (verified with an embedded-quote input); doesn't handle embedded literal newlines or `\uXXXX` escapes in the answer — documented as a limitation in the script. Verified: `./chat.sh "What is 3 plus 5?"` and a quote-containing input both round-tripped correctly.
 
-- **0.5 — Smoke test**
+- [x] **0.5 — Smoke test** ✅ *Done (2026-07-18)*
   Add a basic `@SpringBootTest` (or manual test) sending an arbitrary question through `/chat` and asserting a non-empty response.
   *Done when:* test passes against the running skeleton.
+  *Notes:* `ChatControllerSmokeTest` (`@SpringBootTest(webEnvironment = RANDOM_PORT)`), posts to `/chat` via `TestRestTemplate`, asserts a non-blank answer. Required `@AutoConfigureTestRestTemplate` — in Spring Boot 4, `TestRestTemplate` moved to `org.springframework.boot.resttestclient` and is no longer auto-provided by `@SpringBootTest` alone, it's opt-in via that annotation.
+
+  First implementation depended on a manually-run `docker compose up` Ollama instance — flagged in review as inconsistent with Slice 6's goal of `./gradlew test` passing standalone. Reworked to use a Testcontainers-managed `OllamaContainer` instead (`TestcontainersConfiguration`, `@ServiceConnection`), self-contained and CI-capable. The container is created from a base `ollama/ollama` image only once: the model is pulled and the container committed to a local image tag (`ai-assistant-ollama-qwen3-4b`), reused on later runs to avoid re-pulling ~2.5GB every time. Verified with `docker compose down` (proving no manual stack dependency): first run baked the image in ~4m50s, second run reused it and finished in ~22s. Full `./gradlew build` passes standalone in ~24s.
 
 ## Slice 1 — Countries MCP Server + Capital/Berlin Questions
 

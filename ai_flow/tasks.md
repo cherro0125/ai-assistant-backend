@@ -4,9 +4,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 0 — Walking Skeleton
 
-- **0.1 — Scaffold the Gradle project**
-  Create the Spring Boot 3.3+ project with Gradle (Kotlin DSL), dependencies: `spring-ai-starter-model-ollama`, `spring-boot-starter-web`, `spring-boot-starter-test`.
+- [x] **0.1 — Scaffold the Gradle project** ✅ *Done (2026-07-17)*
+  Create the Spring Boot 4.1.x project with Gradle (Kotlin DSL), dependencies: `spring-ai-starter-model-ollama`, `spring-boot-starter-webmvc`, test starter.
   *Done when:* `./gradlew build` succeeds with an empty app.
+  *Notes:* Generated via the real Spring Initializr API (start.spring.io) to get current, correct coordinates — surfaced the Spring Boot 3.3→4.1 / Spring AI 1.0→2.0 version correction recorded in `tech_stack.md`. Project files live at the repo root (not a nested `app/` subdirectory).
 
 - **0.2 — Docker Compose: Ollama service**
   Write `docker-compose.yml` with an `ollama` service; add a one-shot init step/script that runs `ollama pull qwen3:4b` after the container is up.

@@ -14,13 +14,15 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
   *Done when:* `docker compose up` starts Ollama and `qwen3:4b` is available inside it.
   *Notes:* `ollama` service has a healthcheck (`ollama list`); a separate `ollama-pull-model` one-shot service (`depends_on: condition: service_healthy`) pulls `qwen3:4b` and exits. Verified via `docker exec ai-assistant-ollama-1 ollama list` — model present, 2.5GB. Model persists in the `ollama_data` named volume across restarts.
 
-- **0.3 — `/chat` endpoint (no tools)**
+- [x] **0.3 — `/chat` endpoint (no tools)** ✅ *Done (2026-07-18)*
   Implement `POST /chat` REST controller, request `{ "message": "..." }`, response `{ "answer": "..." }`, calling Spring AI `ChatClient` configured for Ollama `qwen3:4b` directly, no tools/RAG.
   *Done when:* a manual POST returns a real qwen3:4b-generated answer.
+  *Notes:* `ChatController` + `ChatClientConfig` (builds `ChatClient` from the auto-configured `ChatClient.Builder`) + `ChatRequest`/`ChatResponse` records, under `com.cdq.aiassistant.chat`. Verified live: `curl -X POST localhost:8080/chat -d '{"message": "..."}'` against the running app + Ollama container returned a real qwen3:4b answer.
 
-- **0.4 — `chat.sh` convenience script**
+- [x] **0.4 — `chat.sh` convenience script** ✅ *Done (2026-07-18)*
   Write a bash script `chat.sh "question"` that wraps a `curl -X POST` call to `/chat` and prints the answer.
   *Done when:* `./chat.sh "hello"` prints a readable answer without manual curl flags.
+  *Notes:* Initially used `python3` for JSON encode/decode, then reworked to pure `sed` (no `python3` dependency) per follow-up request. Handles quote/backslash escaping correctly (verified with an embedded-quote input); doesn't handle embedded literal newlines or `\uXXXX` escapes in the answer — documented as a limitation in the script. Verified: `./chat.sh "What is 3 plus 5?"` and a quote-containing input both round-tripped correctly.
 
 - **0.5 — Smoke test**
   Add a basic `@SpringBootTest` (or manual test) sending an arbitrary question through `/chat` and asserting a non-empty response.

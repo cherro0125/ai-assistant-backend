@@ -7,8 +7,8 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 
 - [x] Scaffold Gradle (Kotlin DSL) Spring Boot 4.1.x project with `spring-ai-starter-model-ollama`, `spring-boot-starter-webmvc`, test starter.
 - [x] Write `docker-compose.yml` with `ollama` service; add init step to `ollama pull qwen3:4b`.
-- [ ] Implement `POST /chat` controller: `{ "message": "..." }` → `{ "answer": "..." }`, wired straight to Spring AI `ChatClient` (no tools yet).
-- [ ] Write `chat.sh "question"` bash script wrapping `curl` against `/chat`.
+- [x] Implement `POST /chat` controller: `{ "message": "..." }` → `{ "answer": "..." }`, wired straight to Spring AI `ChatClient` (no tools yet).
+- [x] Write `chat.sh "question"` bash script wrapping `curl` against `/chat`.
 - [ ] Smoke test: send an arbitrary question, confirm a real qwen3:4b response comes back.
 
 **Definition of done:** `docker compose up` + `./chat.sh "hello"` returns a real LLM answer.

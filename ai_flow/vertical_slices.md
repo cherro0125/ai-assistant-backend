@@ -18,7 +18,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 ## Slice 1 — Countries MCP Server + Capital/Berlin Questions
 **Goal:** Answer *"What is the capital city of Germany?"* and *"What do you know about Berlin?"* end-to-end.
 
-- [ ] New Gradle module: countries MCP server, `spring-ai-starter-mcp-server-webmvc` (SSE transport).
+- [x] New Gradle module: countries MCP server, `spring-ai-starter-mcp-server-webmvc` (SSE transport).
 - [ ] Implement `getCountryInfo(countryName)` tool calling `restcountries.com` via Spring `RestClient` (capital, region, population, languages, currencies).
 - [ ] Add `countries-mcp-server` service to `docker-compose.yml`.
 - [ ] Wire main app's `spring-ai-starter-mcp-client` to connect to it over SSE; register the tool with `ChatClient`.

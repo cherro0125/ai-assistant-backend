@@ -33,9 +33,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 1 — Countries MCP Server + Capital/Berlin Questions
 
-- **1.1 — Scaffold countries MCP server module**
+- [x] **1.1 — Scaffold countries MCP server module** ✅ *Done (2026-07-18)*
   New Gradle module/subproject for the countries MCP server using `spring-ai-starter-mcp-server-webmvc` (SSE transport).
   *Done when:* module builds and starts as a standalone Spring Boot app.
+  *Notes:* Added as a Gradle subproject (`countries-mcp-server/`, included via root `settings.gradle.kts`) rather than restructuring the existing root app into a nested module — Gradle supports a root project with its own sources plus included subprojects, so nothing about the existing app/docker-compose/chat.sh setup needed to change. Verified real artifact coordinates via a throwaway Spring Initializr probe (`spring-ai-starter-mcp-server-webmvc`, matching what was already in `tech_stack.md`). `CountriesMcpServerApplication` starts standalone on port 8081; logs confirm `McpServerAutoConfiguration` enabling tools/resources/prompts/completions capabilities (with an expected "no tool methods found" warning — the actual tool is task 1.2). Root `./gradlew build` now builds both modules together.
 
 - **1.2 — `getCountryInfo` tool implementation**
   Implement a tool method `getCountryInfo(countryName)` that calls `restcountries.com` (via Spring `RestClient`) and returns capital, region, population, languages, currencies.

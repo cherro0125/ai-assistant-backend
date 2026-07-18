@@ -6,7 +6,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 **Goal:** Prove the base chat pipeline works end-to-end via Docker Compose before adding any knowledge source.
 
 - [x] Scaffold Gradle (Kotlin DSL) Spring Boot 4.1.x project with `spring-ai-starter-model-ollama`, `spring-boot-starter-webmvc`, test starter.
-- [ ] Write `docker-compose.yml` with `ollama` service; add init step to `ollama pull qwen3:4b`.
+- [x] Write `docker-compose.yml` with `ollama` service; add init step to `ollama pull qwen3:4b`.
 - [ ] Implement `POST /chat` controller: `{ "message": "..." }` → `{ "answer": "..." }`, wired straight to Spring AI `ChatClient` (no tools yet).
 - [ ] Write `chat.sh "question"` bash script wrapping `curl` against `/chat`.
 - [ ] Smoke test: send an arbitrary question, confirm a real qwen3:4b response comes back.

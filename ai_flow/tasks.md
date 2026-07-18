@@ -9,9 +9,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
   *Done when:* `./gradlew build` succeeds with an empty app.
   *Notes:* Generated via the real Spring Initializr API (start.spring.io) to get current, correct coordinates — surfaced the Spring Boot 3.3→4.1 / Spring AI 1.0→2.0 version correction recorded in `tech_stack.md`. Project files live at the repo root (not a nested `app/` subdirectory).
 
-- **0.2 — Docker Compose: Ollama service**
+- [x] **0.2 — Docker Compose: Ollama service** ✅ *Done (2026-07-18)*
   Write `docker-compose.yml` with an `ollama` service; add a one-shot init step/script that runs `ollama pull qwen3:4b` after the container is up.
   *Done when:* `docker compose up` starts Ollama and `qwen3:4b` is available inside it.
+  *Notes:* `ollama` service has a healthcheck (`ollama list`); a separate `ollama-pull-model` one-shot service (`depends_on: condition: service_healthy`) pulls `qwen3:4b` and exits. Verified via `docker exec ai-assistant-ollama-1 ollama list` — model present, 2.5GB. Model persists in the `ollama_data` named volume across restarts.
 
 - **0.3 — `/chat` endpoint (no tools)**
   Implement `POST /chat` REST controller, request `{ "message": "..." }`, response `{ "answer": "..." }`, calling Spring AI `ChatClient` configured for Ollama `qwen3:4b` directly, no tools/RAG.

@@ -22,6 +22,7 @@ extra["springAiVersion"] = "2.0.0"
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-restclient")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.ai:spring-ai-starter-mcp-server-webmvc")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.wiremock:wiremock-standalone:3.13.1")
@@ -36,4 +37,8 @@ dependencyManagement {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.bootJar {
+	archiveFileName.set("app.jar")
 }

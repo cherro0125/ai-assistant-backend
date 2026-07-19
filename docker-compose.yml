@@ -21,5 +21,19 @@ services:
     entrypoint: ["ollama", "pull", "qwen3:4b"]
     restart: "no"
 
+  countries-mcp-server:
+    build:
+      context: .
+      dockerfile: countries-mcp-server/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - COUNTRIES_API_KEY=${COUNTRIES_API_KEY:?COUNTRIES_API_KEY must be set in .env}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 volumes:
   ollama_data:

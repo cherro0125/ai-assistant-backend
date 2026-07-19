@@ -68,9 +68,12 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Verified live: main app startup log shows the MCP handshake (`Server response with Protocol: 2024-11-05, Capabilities: ...tools=ToolCapabilities[listChanged=true]...`), matched on the server side by `countries-mcp-server`'s own log (`Client initialize request ... Implementation[name=spring-ai-mcp-client - countries...]`). Bonus end-to-end sanity check: `./chat.sh "What is the capital of Germany?"` → "The capital of Germany is Berlin." — real answer through the full chain, though not by itself proof the tool was actually invoked (the model could know this fact regardless); a harder, unambiguous test comes later (task 1.7, and the multi-hop weather question in Slice 3).
 
-- **1.6 — System prompt for country/capital questions**
+- [x] **1.6 — System prompt for country/capital questions** ✅ *Done (2026-07-19)*
   Write/extend the system prompt so the LLM knows when to invoke the countries tool.
   *Done when:* the model reliably calls the tool rather than guessing from its own knowledge.
+  *Notes:* Added a `SYSTEM_PROMPT` constant in `ChatClientConfig`, wired via `builder.defaultSystem(...)`, instructing the model to always call `getCountryInfo` for capital/region/population/language/currency questions instead of relying on its own (potentially outdated) knowledge.
+
+  Verified with **actual proof of tool invocation**, not just plausible-looking answers (addressing the gap noted at the end of task 1.5's review): restarted the app with `--logging.level.io.modelcontextprotocol=DEBUG`, which logs `DefaultToolCallingManager : Executing tool call: getCountryInfo` on real invocation. Ran 4 questions: "capital of Germany", "capital city of Germany", "What do you know about Berlin?" (all 3 → tool called, confirmed via the debug log line, count went 0→1→2→3) and an unrelated "What is 7 times 8?" (tool NOT called, count stayed at 3, model even explicitly said "no tool calls were made"). 4/4 correct behavior — reliable in both directions, not just eager to call the tool for everything.
 
 - **1.7 — Manual verification: capital + Berlin questions**
   Run "What is the capital city of Germany?" and "What do you know about Berlin?" through `chat.sh`; capture the transcripts.

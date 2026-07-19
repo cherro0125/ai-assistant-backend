@@ -6,3 +6,10 @@ spring:
       base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
       chat:
         model: qwen3:4b
+    mcp:
+      client:
+        sse:
+          connections:
+            countries:
+              url: ${COUNTRIES_MCP_URL:http://localhost:8081}
+              sse-endpoint: /sse

@@ -37,7 +37,8 @@ Concrete technology decisions for the AI Assistant, derived from `ai_flow/detail
 | Transport | SSE over HTTP (WebMVC) | Unlike the Node-based weather server, we control this implementation, so HTTP/SSE lets it run as its own container in `docker-compose.yml` and be reached over the network — cleaner in a multi-container Docker setup than a stdio subprocess |
 | HTTP client (outbound to restcountries.com) | Spring 6 `RestClient` | Modern, synchronous, no need for reactive `WebClient` since call volume is trivial |
 | Exposed tool(s) | `getCountryInfo(countryName)` → capital, region, population, languages, currencies | Covers both the "capital of Germany" question and the "what do you know about Berlin" question (via Germany's country data) |
-| API auth | None required | restcountries.com is free/keyless |
+| API auth | Bearer token (`Authorization: Bearer <key>`), key in `COUNTRIES_API_KEY` env var / `.env` | **Revised**: restcountries.com's legacy free/keyless API (v1–v4) is fully shut down; the current v5 API requires a free-tier account and API key for every request. Endpoint is `https://api.restcountries.com/countries/v5/names.common/{name}`, JSON:API-shaped response |
+| Tool registration mechanism | `@McpTool` / `@McpToolParam` (annotation-based scanning) on a plain `@Component` bean | Spring AI 2.0's MCP server module scans for `@McpTool`-annotated methods automatically (confirmed via startup log: "Registered tools: 1") — different from the older `@Tool`/`ToolCallbackProvider` pattern from Spring AI 1.0 |
 
 ## External MCP Server (mcp-weather)
 

@@ -4,3 +4,8 @@ server:
 spring:
   application:
     name: countries-mcp-server
+
+countries:
+  api:
+    base-url: https://api.restcountries.com
+    key: ${COUNTRIES_API_KEY}

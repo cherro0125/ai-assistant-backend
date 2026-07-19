@@ -99,3 +99,15 @@ This document records every clarification question asked during planning (via Cl
 **Not a question Claude Code asked** — a correction to a default I picked. `tech_stack.md` initially chose Maven with the reasoning "no strong reason to prefer Gradle here." You pointed out that by that same logic, there's also no strong reason to prefer Maven, and you'd rather use Gradle.
 
 **Change made:** Updated the Build tool row in `ai_flow/tech_stack.md` from Maven to Gradle (Kotlin DSL).
+
+---
+
+## 11. restcountries.com free API no longer exists (Slice 1, task 1.2)
+
+**Not a question Claude Code asked initially — a blocker discovered mid-implementation.** While implementing the `getCountryInfo` tool, live-checked `restcountries.com` before writing code and found its legacy free/keyless API (v1–v4, including the `v3.1` endpoint the original task links to) has been fully shut down. The current v5 API returns `401 Authorization key required` for every request, including basic lookups — no free/keyless tier appears to remain for the country-data API itself (a separate free flag-image CDN exists but is unrelated). This directly contradicts the task's premise: *"Remote free REST Service (restcountries.com)."*
+
+**Question:** How to proceed — switch to a different free API, have you sign up for a paid/free-tier key yourself, or document this as a task limitation per the task's own "if you were not able to fulfill a task, explain why" allowance?
+
+**Answer:** Sign up yourself and provide the key (same pattern as `WEATHER_API_KEY`). You then provided a real key (`rc_live_...`).
+
+**Change made:** Confirmed the signup page does offer a free tier ("Create a free account to access your API key", 500 requests/month). Determined the real v5 auth mechanism (bearer token) and endpoint shape (`https://api.restcountries.com/countries/v5/names.common/{name}`, JSON:API-style response) by testing directly against the live API with the provided key. Stored the key as `COUNTRIES_API_KEY` in `.env` (placeholder in `example.env`). Updated `ai_flow/tech_stack.md`'s "Custom MCP Server" section (API auth row, corrected from "None required — free/keyless") to reflect the real auth mechanism and endpoint.

@@ -24,6 +24,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-restclient")
 	implementation("org.springframework.ai:spring-ai-starter-mcp-server-webmvc")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+	testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

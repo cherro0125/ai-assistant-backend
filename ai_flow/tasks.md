@@ -47,9 +47,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Verification: `CountryInfoToolLiveTest` calls the tool directly against the real API, asserting Germany → capital=Berlin, region=Europe, population>0, languages contains German, currencies contains Euro — passed (confirmed via test XML: `skipped="0"`). Guarded with `@EnabledIfEnvironmentVariable(named = "COUNTRIES_API_KEY", ...)` so `./gradlew build` stays green without the key (caught this before it became a repeat of the Slice 0 task 0.5 issue). A WireMock-based offline unit test is still task 1.3.
 
-- **1.3 — Unit tests for the countries tool**
+- [x] **1.3 — Unit tests for the countries tool** ✅ *Done (2026-07-19)*
   Add unit tests mocking the `restcountries.com` HTTP call (WireMock), covering found-country and not-found cases.
   *Done when:* tests pass without a real network call.
+  *Notes:* `CountriesApiClientTest` (WireMock, `org.wiremock:wiremock-standalone` — the bare `wiremock` artifact failed at runtime with "Jetty 11 is not present" due to a classpath conflict with a newer Jetty resolved elsewhere in the Boot 4.1 stack; the standalone artifact shades its own Jetty to avoid this) covers found (Germany, full field mapping) and not-found (empty `objects` → `Optional.empty()`) cases, directly exercising `CountriesApiClient`'s HTTP call and JSON parsing. Added `CountryInfoToolTest` (Mockito) too, covering `CountryInfoTool`'s delegation/exception-throwing logic at the tool layer. Verified: full `./gradlew clean build` passes standalone with `COUNTRIES_API_KEY` unset (22s) — the new tests need no network call, while `CountryInfoToolLiveTest` from task 1.2 correctly self-skips (`skipped="1"`) without the key and still passes when it's set.
 
 - **1.4 — Add countries MCP server to Docker Compose**
   Add a `countries-mcp-server` service to `docker-compose.yml`, exposing its SSE endpoint on the internal Docker network.

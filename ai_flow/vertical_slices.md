@@ -23,7 +23,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 - [ ] Add `countries-mcp-server` service to `docker-compose.yml`.
 - [ ] Wire main app's `spring-ai-starter-mcp-client` to connect to it over SSE; register the tool with `ChatClient`.
 - [ ] Write a system prompt describing the tool's purpose so the LLM knows to call it for country/capital questions.
-- [ ] Unit tests for `getCountryInfo` (mock restcountries.com HTTP calls, e.g. WireMock).
+- [x] Unit tests for `getCountryInfo` (mock restcountries.com HTTP calls, e.g. WireMock).
 - [ ] Manual verification: ask both required questions via `chat.sh`, capture responses.
 
 **Definition of done:** Both questions answered correctly using live tool calls, not model guesswork.

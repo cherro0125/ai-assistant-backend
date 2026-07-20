@@ -75,9 +75,23 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Verified with **actual proof of tool invocation**, not just plausible-looking answers (addressing the gap noted at the end of task 1.5's review): restarted the app with `--logging.level.io.modelcontextprotocol=DEBUG`, which logs `DefaultToolCallingManager : Executing tool call: getCountryInfo` on real invocation. Ran 4 questions: "capital of Germany", "capital city of Germany", "What do you know about Berlin?" (all 3 → tool called, confirmed via the debug log line, count went 0→1→2→3) and an unrelated "What is 7 times 8?" (tool NOT called, count stayed at 3, model even explicitly said "no tool calls were made"). 4/4 correct behavior — reliable in both directions, not just eager to call the tool for everything.
 
-- **1.7 — Manual verification: capital + Berlin questions**
+- [x] **1.7 — Manual verification: capital + Berlin questions** ✅ *Done (2026-07-20)*
   Run "What is the capital city of Germany?" and "What do you know about Berlin?" through `chat.sh`; capture the transcripts.
   *Done when:* both answers are correct and demonstrably backed by a live tool call (not hallucinated).
+  *Notes:* Brought up `ollama` + `countries-mcp-server` via `docker compose up -d` (both reported healthy), ran the main app locally via `./gradlew bootRun --args='--logging.level.io.modelcontextprotocol=DEBUG'`. Confirmed the MCP handshake and `getCountryInfo` tool discovery in the startup log, then ran both questions through `chat.sh`.
+
+  Transcript:
+  ```
+  $ ./chat.sh "What is the capital city of Germany?"
+  The capital city of Germany is Berlin.
+
+  $ ./chat.sh "What do you know about Berlin?"
+  Berlin is the capital city of Germany, located in the European region. According to the
+  latest data, Germany has a population of approximately 83,467,117 people, with German as
+  the official language and the Euro (€) as the currency.
+  ```
+
+  Proof of live tool invocation (not hallucinated): the task 1.6 log line (`DefaultToolCallingManager : Executing tool call: ...`) didn't appear this run (different logger active at that level), so verification instead used the raw MCP protocol log, which is unambiguous — each question produced its own `Sending message for method tools/call` immediately followed by a `Received JSON message` containing the real `CountriesApiClient` payload (`{"name":"Germany","capital":"Berlin","region":"Europe","population":83467117,"languages":["German"],"currencies":["Euro"]}`), matching the live data verified back in task 1.2. Two questions → two independent `tools/call` round trips (log count went 0→1→2), each with matching request/response timestamps and the real API payload embedded in the response — not something the model could produce from static knowledge alone.
 
 ## Slice 2 — Weather MCP Integration + Munich Question
 

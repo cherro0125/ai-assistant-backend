@@ -24,7 +24,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 - [x] Wire main app's `spring-ai-starter-mcp-client` to connect to it over SSE; register the tool with `ChatClient`.
 - [x] Write a system prompt describing the tool's purpose so the LLM knows to call it for country/capital questions.
 - [x] Unit tests for `getCountryInfo` (mock restcountries.com HTTP calls, e.g. WireMock).
-- [ ] Manual verification: ask both required questions via `chat.sh`, capture responses.
+- [x] Manual verification: ask both required questions via `chat.sh`, capture responses.
 
 **Definition of done:** Both questions answered correctly using live tool calls, not model guesswork.
 

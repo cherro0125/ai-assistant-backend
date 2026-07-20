@@ -38,7 +38,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 - [x] Extend main app's Dockerfile to a multi-stage build: Node stage builds `mcp-weather`, final image has JRE + Node runtime.
 - [x] Configure Spring AI MCP client to spawn `mcp-weather` as a **stdio** subprocess on app startup, passing `WEATHER_API_KEY` through.
 - [x] Register the weather tool with `ChatClient`; extend system prompt to mention it.
-- [ ] Manual verification: ask the Munich question via `chat.sh`, capture response.
+- [x] Manual verification: ask the Munich question via `chat.sh`, capture response.
 
 **Definition of done:** Munich temperature question answered via a live call through the stdio-spawned MCP server.
 

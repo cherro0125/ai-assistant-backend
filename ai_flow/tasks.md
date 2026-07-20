@@ -141,9 +141,22 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Hit an unrelated environment issue while testing, not a defect in this change: Ollama's `llama-server` subprocess got OOM-killed mid-request (`dmesg` confirmed real kernel OOM kills) due to host memory pressure from an unrelated JetBrains RemoteDev process plus a stale Gradle daemon; freed memory by stopping the stale daemon (`./gradlew --stop`) and retried successfully. Worth knowing for future test runs in this environment if Ollama requests start timing out unexpectedly.
 
-- **2.6 — Manual verification: Munich question**
+- [x] **2.6 — Manual verification: Munich question** ✅ *Done (2026-07-20)*
   Run "What is the temperature currently in Munich?" through `chat.sh`; capture the transcript.
   *Done when:* the answer reflects a live weatherapi.com value for Munich.
+  *Notes:* Already got a strong preliminary signal for this in task 2.4 (before the task 2.5 system-prompt update even existed), but ran a formal, clean verification now with the current code.
+
+  Transcript:
+  ```
+  $ ./chat.sh "What is the temperature currently in Munich?"
+  The current temperature in Munich is 21°C.
+  ```
+
+  Proof of live tool invocation, not hallucinated: debug log (`--logging.level.io.modelcontextprotocol=DEBUG`) shows a real `tools/call` → `Received JSON message: {"result":{"content":[{"type":"text","text":"the weather in Munich is currently: 21"}]}...}`. Independently cross-checked against a fresh direct curl to weatherapi.com moments later — `"temp_c":21.2` — confirms the value is genuinely live (small drift between the two readings a couple minutes apart is expected, not a discrepancy).
+
+  Hit the same environment memory issue as task 2.5 while testing (Ollama's `llama-server` OOM-killed mid-generation this time, confirmed via `dmesg`) — retried after the crashed process freed memory and got a clean run. Also checked for a process-leak concern this raised: confirmed the `weather-mcp` stdio subprocess from the app instance killed at the end of task 2.5 did *not* linger as an orphan (`ps aux` showed no stray `node .../tsx` processes before starting this task's fresh run) — the OOM kills are a real but unrelated host memory-pressure issue in this environment, not a subprocess-lifecycle bug in the app.
+
+  **Slice 2 is now fully complete**: all three required questions (capital of Germany, Berlin, Munich temperature) are answered correctly through live tool calls.
 
 ## Slice 3 — Multi-Hop Tool Orchestration
 

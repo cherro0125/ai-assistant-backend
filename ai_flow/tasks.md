@@ -160,9 +160,24 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 3 — Multi-Hop Tool Orchestration
 
-- **3.1 — Manual verification: capital-of-Germany temperature question**
+- [x] **3.1 — Manual verification: capital-of-Germany temperature question** ✅ *Done (2026-07-20)*
   Run "What is the temperature of the capital of Germany currently?" through `chat.sh` multiple times; check whether the model chains countries-tool → weather-tool correctly.
   *Done when:* a correct, tool-chained transcript is captured, or inconsistent behavior is documented.
+  *Notes:* Ran it 5 times against the running app (`ollama` + `countries-mcp-server` via Docker, main app via `./gradlew bootRun --args='--logging.level.io.modelcontextprotocol=DEBUG'`), no additional prompt changes — the existing system prompt from tasks 1.6/2.5 already covers both tools individually, and that turned out to be sufficient for the model to chain them on its own.
+
+  **Chaining reliability: 5/5 correct.** Every single run's debug log shows the exact same correct sequence — `getCountryInfo("Germany")` → `{"capital":"Berlin",...}` → `get-weather("Berlin")` → real temperature — never skipping the country lookup, never passing the wrong city (e.g. "Germany" instead of "Berlin") to the weather tool. Sample transcripts:
+  ```
+  $ ./chat.sh "What is the temperature of the capital of Germany currently?"
+  The capital of Germany is Berlin, and the current temperature there is **18°C**.
+
+  $ ./chat.sh "What is the temperature of the capital of Germany currently?"
+  The current temperature in Berlin, the capital of Germany, is 18.3 degrees.
+
+  $ ./chat.sh "What is the temperature of the capital of Germany currently?"
+  The capital of Germany is Berlin, and the current temperature there is **19°C**.
+  ```
+
+  **Separate, unrelated finding: response latency, not reasoning.** One of the five `chat.sh` calls (150s client-side timeout) returned `exit 124` even though its debug log shows the chaining completed correctly server-side (`tools/call` pair present, right city) — the final natural-language answer just took longer than my client timeout to generate. This environment's Ollama is CPU-only (~16 tokens/sec observed) and had already hit real OOM kills during tasks 2.5/2.6 testing; slow/queued generation under load here is an infrastructure characteristic of this sandbox, not a defect in the multi-hop tool-chaining logic itself — the underlying reasoning was correct in that run too, confirmed via the log.
 
 - **3.2 — Prompt tuning for reliable chaining (if needed)**
   If chaining is unreliable, adjust the system prompt (e.g. explicit reasoning instructions) to improve consistency.

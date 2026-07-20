@@ -35,6 +35,55 @@ The vendored `weather-mcp` server (`weather-mcp/`, from https://github.com/semdi
    WEATHER_API_KEY=your_weatherapi_api_key_here
    ```
 
+## Running the Application
+
+**Note:** the main app isn't containerized in `docker-compose.yml` yet (that's a planned but not-yet-implemented step, see `ai_flow/tasks.md` task 4.1) — for now it's run locally via Gradle, alongside the two services that are already in Docker Compose.
+
+### Prerequisites
+
+- Docker (with Compose)
+- Java 21 (a Gradle wrapper is included, no separate Gradle install needed)
+- Node.js v16+ and npm — needed to run the vendored `weather-mcp/` server, which the main app spawns as a local subprocess
+
+### 1. Configure API keys
+
+```sh
+cp example.env .env
+```
+
+Then fill in `COUNTRIES_API_KEY` and `WEATHER_API_KEY` in `.env` — see "Setup — API Keys" above for how to obtain them.
+
+### 2. Install `weather-mcp`'s dependencies (one-time)
+
+```sh
+cd weather-mcp && npm install && cd ..
+```
+
+The main app spawns `weather-mcp/node_modules/.bin/tsx` directly as a subprocess, so this needs to have been run at least once before starting the app locally.
+
+### 3. Start Ollama and the countries MCP server
+
+```sh
+docker compose up -d ollama countries-mcp-server
+```
+
+Docker Compose reads `.env` automatically — no need to export the variables yourself. Wait for both to report `healthy` (`docker compose ps`); the first run also pulls the `qwen3:4b` model (~2.5GB), which can take a few minutes.
+
+### 4. Run the main app
+
+```sh
+set -a && source .env && set +a
+./gradlew bootRun
+```
+
+The `.env` values need to be in the shell environment here (unlike Docker Compose, the JVM doesn't read `.env` files on its own) — `WEATHER_API_KEY` in particular is passed through to the `weather-mcp` subprocess.
+
+### 5. Ask a question
+
+```sh
+./chat.sh "What is the capital city of Germany?"
+```
+
 ## How this project was built with Claude Code
 
 1. Initialized this repository locally and created it as a public GitHub repo (`ai-assistant-backend`) via the GitHub CLI.

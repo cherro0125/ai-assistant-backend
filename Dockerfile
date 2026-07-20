@@ -28,6 +28,7 @@ WORKDIR /app
 
 COPY --from=java-build /workspace/build/libs/app.jar app.jar
 COPY --from=node-build /weather-mcp ./weather-mcp
+COPY ai_flow/data ./ai_flow/data
 
 RUN chown -R app:app /app
 

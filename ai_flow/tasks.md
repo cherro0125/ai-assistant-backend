@@ -174,10 +174,12 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 4 — RAG Knowledge Base (CDQ Fraud Guard)
 
-- **4.1 — Add `app` service to Docker Compose**
+- [x] **4.1 — Add `app` service to Docker Compose** ✅ *Done (2026-07-20)*
   Add an `app` service (built from the repo-root `Dockerfile` added in task 2.3) to `docker-compose.yml`, wired to `ollama` and `countries-mcp-server` on the Compose network, so `docker compose up --build` brings up the entire stack in one command instead of requiring the main app to be run separately via `./gradlew bootRun`.
   *Done when:* `docker compose up --build` starts all services including `app`, and `chat.sh` gets a real answer with no manually-started process.
-  *Notes:* Not part of the original task list — added after a question during task 2.6 revealed `docker compose up --build` didn't run the main app at all, since task 2.3 only built the Dockerfile without wiring it into `docker-compose.yml`. Deliberately deferred to here (rather than done immediately in Slice 2) since `docker-compose.yml` needs another edit for `postgres`/pgvector in this same slice anyway — one round of changes instead of two.
+  *Notes:* Originally deferred to bundle with task 4.2's `docker-compose.yml` edit, but done now on request, ahead of Slice 3. Added the `app` service: built from the repo-root `Dockerfile`, environment points at the Compose-internal service DNS names rather than `localhost` (`OLLAMA_BASE_URL=http://ollama:11434`, `COUNTRIES_MCP_URL=http://countries-mcp-server:8081`), `WEATHER_API_KEY` passed through from `.env` with the same required-no-default pattern as `countries-mcp-server`'s `COUNTRIES_API_KEY`. `depends_on` waits on `ollama` (healthy), `ollama-pull-model` (`service_completed_successfully` — so the app doesn't come up before `qwen3:4b` is actually pulled), and `countries-mcp-server` (healthy) — without this, the app's eager MCP client initialization at startup would race the other services.
+
+  Verified live: `docker compose up --build -d` built and started all four containers with no manual steps; `app` container logs show both MCP handshakes succeeding purely over the Compose network (`serverInfo={name=semdin-weather-mcp,...}` for the stdio-spawned weather subprocess *inside* the container, and the countries SSE handshake). Ran both `./chat.sh "What is the capital city of Germany?"` → *"The capital city of Germany is Berlin."* and `./chat.sh "What is the temperature currently in Munich?"` → *"The current temperature in Munich is 21.3°C."* against the containerized app with zero manually-started local processes — confirms the full stack really does come up from `docker compose up --build` alone now. Updated the README's "Running the Application" section to lead with this simpler workflow.
 
 - **4.2 — Add pgvector service to Docker Compose**
   Add a `postgres` service using `pgvector/pgvector:pg17` to `docker-compose.yml`.

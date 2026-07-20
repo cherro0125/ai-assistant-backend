@@ -59,7 +59,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 ## Slice 4 — RAG Knowledge Base (CDQ Fraud Guard)
 **Goal:** Ground answers about CDQ Fraud Guard in the scraped product content.
 
-- [ ] Add `app` service (built from the repo-root `Dockerfile`) to `docker-compose.yml` so `docker compose up --build` runs the entire stack.
+- [x] Add `app` service (built from the repo-root `Dockerfile`) to `docker-compose.yml` so `docker compose up --build` runs the entire stack.
 - [ ] Add `postgres` (pgvector/pgvector:pg17) service to `docker-compose.yml`.
 - [ ] Add `spring-ai-starter-vector-store-pgvector`; configure `initialize-schema: true`.
 - [ ] Implement startup `ApplicationRunner`: if vector store empty, chunk `ai_flow/data/cdq_fraud_guard.md` with `TokenTextSplitter`, embed (qwen3:4b, fallback `nomic-embed-text`), store in `PgVectorStore`.

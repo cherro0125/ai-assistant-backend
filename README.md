@@ -37,52 +37,57 @@ The vendored `weather-mcp` server (`weather-mcp/`, from https://github.com/semdi
 
 ## Running the Application
 
-**Note:** the main app isn't containerized in `docker-compose.yml` yet (that's a planned but not-yet-implemented step, see `ai_flow/tasks.md` task 4.1) — for now it's run locally via Gradle, alongside the two services that are already in Docker Compose.
+### Quickest way: Docker Compose
 
-### Prerequisites
+**Prerequisites:** Docker (with Compose).
 
-- Docker (with Compose)
-- Java 21 (a Gradle wrapper is included, no separate Gradle install needed)
-- Node.js v16+ and npm — needed to run the vendored `weather-mcp/` server, which the main app spawns as a local subprocess
+1. Configure API keys:
+   ```sh
+   cp example.env .env
+   ```
+   Then fill in `COUNTRIES_API_KEY` and `WEATHER_API_KEY` in `.env` — see "Setup — API Keys" above for how to obtain them.
 
-### 1. Configure API keys
+2. Bring up the whole stack (Ollama, the countries MCP server, and the main app — the main app's image bundles Node.js and spawns the weather MCP server internally as a subprocess, so nothing extra is needed for that):
+   ```sh
+   docker compose up --build
+   ```
+   Docker Compose reads `.env` automatically. The first run also pulls the `qwen3:4b` model (~2.5GB) and builds two images, so it can take a few minutes; watch `docker compose ps` for all services to report `healthy`/`Up`.
 
-```sh
-cp example.env .env
-```
+3. Ask a question:
+   ```sh
+   ./chat.sh "What is the capital city of Germany?"
+   ```
 
-Then fill in `COUNTRIES_API_KEY` and `WEATHER_API_KEY` in `.env` — see "Setup — API Keys" above for how to obtain them.
+### Running the main app locally instead
 
-### 2. Install `weather-mcp`'s dependencies (one-time)
+Useful if you're iterating on the Java code and don't want to rebuild the Docker image on every change — Ollama and the countries MCP server still run in Docker, but the main app runs directly via Gradle.
 
-```sh
-cd weather-mcp && npm install && cd ..
-```
+**Prerequisites:** Java 21 (a Gradle wrapper is included, no separate Gradle install needed), Node.js v16+ and npm (needed to run the vendored `weather-mcp/` server, which the main app spawns as a local subprocess).
 
-The main app spawns `weather-mcp/node_modules/.bin/tsx` directly as a subprocess, so this needs to have been run at least once before starting the app locally.
+1. Configure API keys as above (`cp example.env .env` and fill in the real values).
 
-### 3. Start Ollama and the countries MCP server
+2. Install `weather-mcp`'s dependencies (one-time — the main app spawns `weather-mcp/node_modules/.bin/tsx` directly, so this needs to have been run at least once):
+   ```sh
+   cd weather-mcp && npm install && cd ..
+   ```
 
-```sh
-docker compose up -d ollama countries-mcp-server
-```
+3. Start Ollama and the countries MCP server only:
+   ```sh
+   docker compose up -d ollama countries-mcp-server
+   ```
+   Wait for both to report `healthy` (`docker compose ps`).
 
-Docker Compose reads `.env` automatically — no need to export the variables yourself. Wait for both to report `healthy` (`docker compose ps`); the first run also pulls the `qwen3:4b` model (~2.5GB), which can take a few minutes.
+4. Run the main app:
+   ```sh
+   set -a && source .env && set +a
+   ./gradlew bootRun
+   ```
+   The `.env` values need to be in the shell environment here (unlike Docker Compose, the JVM doesn't read `.env` files on its own) — `WEATHER_API_KEY` in particular is passed through to the `weather-mcp` subprocess.
 
-### 4. Run the main app
-
-```sh
-set -a && source .env && set +a
-./gradlew bootRun
-```
-
-The `.env` values need to be in the shell environment here (unlike Docker Compose, the JVM doesn't read `.env` files on its own) — `WEATHER_API_KEY` in particular is passed through to the `weather-mcp` subprocess.
-
-### 5. Ask a question
-
-```sh
-./chat.sh "What is the capital city of Germany?"
-```
+5. Ask a question:
+   ```sh
+   ./chat.sh "What is the capital city of Germany?"
+   ```
 
 ## How this project was built with Claude Code
 

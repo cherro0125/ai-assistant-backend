@@ -16,6 +16,11 @@ public class ChatClientConfig {
 			region, population, languages, or currencies, always call this tool rather than \
 			answering from your own knowledge — your training data may be outdated, and the tool \
 			returns current, authoritative data.
+
+			You also have a `get-weather` tool that returns the current temperature for a given \
+			city. For any question about the current weather or temperature in a city, always \
+			call this tool rather than answering from your own knowledge — your training data has \
+			no access to live conditions.
 			""";
 
 	@Bean

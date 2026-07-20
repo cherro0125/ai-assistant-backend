@@ -174,31 +174,36 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 4 — RAG Knowledge Base (CDQ Fraud Guard)
 
-- **4.1 — Add pgvector service to Docker Compose**
+- **4.1 — Add `app` service to Docker Compose**
+  Add an `app` service (built from the repo-root `Dockerfile` added in task 2.3) to `docker-compose.yml`, wired to `ollama` and `countries-mcp-server` on the Compose network, so `docker compose up --build` brings up the entire stack in one command instead of requiring the main app to be run separately via `./gradlew bootRun`.
+  *Done when:* `docker compose up --build` starts all services including `app`, and `chat.sh` gets a real answer with no manually-started process.
+  *Notes:* Not part of the original task list — added after a question during task 2.6 revealed `docker compose up --build` didn't run the main app at all, since task 2.3 only built the Dockerfile without wiring it into `docker-compose.yml`. Deliberately deferred to here (rather than done immediately in Slice 2) since `docker-compose.yml` needs another edit for `postgres`/pgvector in this same slice anyway — one round of changes instead of two.
+
+- **4.2 — Add pgvector service to Docker Compose**
   Add a `postgres` service using `pgvector/pgvector:pg17` to `docker-compose.yml`.
   *Done when:* the container starts and the pgvector extension is available.
 
-- **4.2 — Add `PgVectorStore` dependency and config**
+- **4.3 — Add `PgVectorStore` dependency and config**
   Add `spring-ai-starter-vector-store-pgvector`; configure connection + `initialize-schema: true`.
   *Done when:* app startup creates the vector schema with no errors.
 
-- **4.3 — Ingestion runner for `cdq_fraud_guard.md`**
+- **4.4 — Ingestion runner for `cdq_fraud_guard.md`**
   Implement an `ApplicationRunner` that, if the vector store is empty, chunks `ai_flow/data/cdq_fraud_guard.md` with `TokenTextSplitter`, embeds it, and stores it.
   *Done when:* on first startup, the vector store contains the expected number of chunks; on subsequent startups, ingestion is skipped.
 
-- **4.4 — Embeddings model wiring (qwen3:4b, with fallback)**
+- **4.5 — Embeddings model wiring (qwen3:4b, with fallback)**
   Configure Spring AI to use `qwen3:4b` for embeddings; if it fails to produce usable vectors, switch config to `nomic-embed-text` (pulled via Ollama) instead.
   *Done when:* embeddings are successfully generated and stored end-to-end with whichever model works.
 
-- **4.5 — RAG advisor wiring**
+- **4.6 — RAG advisor wiring**
   Add a retrieval advisor to the main `ChatClient` so relevant chunks are injected into the prompt for matching queries.
   *Done when:* a CDQ-specific question's prompt (traceable via logs) includes retrieved chunk content.
 
-- **4.6 — Tests for ingestion + retrieval**
+- **4.7 — Tests for ingestion + retrieval**
   Unit test for the chunking logic; Testcontainers-based integration test verifying embed-then-retrieve round-trip against a real pgvector instance.
   *Done when:* both tests pass via `./gradlew test`.
 
-- **4.7 — Manual verification: CDQ Fraud Guard question**
+- **4.8 — Manual verification: CDQ Fraud Guard question**
   Ask a CDQ Fraud Guard product question via `chat.sh`; confirm the answer reflects the scraped content.
   *Done when:* transcript captured and content-accurate.
 

@@ -179,9 +179,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   **Separate, unrelated finding: response latency, not reasoning.** One of the five `chat.sh` calls (150s client-side timeout) returned `exit 124` even though its debug log shows the chaining completed correctly server-side (`tools/call` pair present, right city) — the final natural-language answer just took longer than my client timeout to generate. This environment's Ollama is CPU-only (~16 tokens/sec observed) and had already hit real OOM kills during tasks 2.5/2.6 testing; slow/queued generation under load here is an infrastructure characteristic of this sandbox, not a defect in the multi-hop tool-chaining logic itself — the underlying reasoning was correct in that run too, confirmed via the log.
 
-- **3.2 — Prompt tuning for reliable chaining (if needed)**
+- [x] **3.2 — Prompt tuning for reliable chaining (if needed)** ✅ *Done (2026-07-20)*
   If chaining is unreliable, adjust the system prompt (e.g. explicit reasoning instructions) to improve consistency.
   *Done when:* repeated manual runs show materially improved chaining reliability, or the residual limitation is written up.
+  *Notes:* Not needed — no-op. Task 3.1 already showed 5/5 reliable chaining with the existing per-tool system prompt (from tasks 1.6/2.5), so the "if needed" condition was never triggered. No changes made to `ChatClientConfig`.
 
 - **3.3 — Document outcome**
   Record the final behavior (reliable / partially reliable / not achievable) and rationale in `ai_flow/` notes, to feed into the README's "limitations" section later.

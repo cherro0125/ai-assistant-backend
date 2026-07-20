@@ -89,6 +89,33 @@ Useful if you're iterating on the Java code and don't want to rebuild the Docker
    ./chat.sh "What is the capital city of Germany?"
    ```
 
+## Answers to Required Questions
+
+Real transcripts captured via `./chat.sh` (i.e. the actual `/chat` endpoint) against the live stack, backed by real tool calls (`getCountryInfo`/`get-weather` MCP tools) and, for the last one, the RAG-grounded CDQ Fraud Guard content — not hand-written or hallucinated. Weather answers reflect live conditions at the time they were captured (2026-07-20) and will differ on a later run.
+
+**What is the capital city of Germany?**
+> The capital city of Germany is Berlin.
+
+**What do you know about Berlin?**
+> Berlin is the capital city of Germany, located in Europe. The population of Germany is approximately 83.47 million, with German as the official language and the Euro as the currency.
+
+**What is the temperature currently in Munich?**
+> The current temperature in Munich is **16.2°C**.
+
+**What is the temperature of the capital of Germany currently?**
+> The capital of Germany is Berlin. The current temperature in Berlin is **17 degrees**.
+
+**Custom question — What does CDQ Fraud Guard do?** (demonstrates the RAG knowledge base described in "Setup — API Keys" and `ai_flow/data/cdq_fraud_guard.md`; the full list of "show off" custom questions is still being finalized, see `ai_flow/tasks.md` task 5.1)
+> **CDQ Fraud Guard** is a fraud detection tool designed to protect businesses from payment fraud and inaccurate bank account information. It works by:
+>
+> 1. **Verifying bank accounts** against a shared database of validated accounts to prevent fraudulent transactions.
+> 2. **Assigning trust scores** to bank accounts based on transaction history (customizable per business risk tolerance).
+> 3. **Sending real-time fraud alerts** for potential threats using community-shared fraud case data.
+> 4. **Managing fraud cases** to identify and mitigate risks proactively.
+> 5. **Integrating seamlessly** with existing financial systems via an API to streamline compliance and security.
+>
+> As highlighted in the customer testimonial, it significantly reduces onboarding time (from up to one month to near-instant) by eliminating redundant documentation through automated trust scoring and verification.
+
 ## How this project was built with Claude Code
 
 1. Initialized this repository locally and created it as a public GitHub repo (`ai-assistant-backend`) via the GitHub CLI.

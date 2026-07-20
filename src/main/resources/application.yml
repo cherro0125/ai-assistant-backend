@@ -13,3 +13,12 @@ spring:
             countries:
               url: ${COUNTRIES_MCP_URL:http://localhost:8081}
               sse-endpoint: /sse
+        stdio:
+          connections:
+            weather:
+              command: weather-mcp/node_modules/.bin/tsx
+              args:
+                - weather-mcp/src/index.ts
+              env:
+                WEATHER_API_URL: https://api.weatherapi.com/v1/current.json
+                WEATHER_API_KEY: ${WEATHER_API_KEY}

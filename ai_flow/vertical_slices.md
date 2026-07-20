@@ -47,10 +47,10 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 ## Slice 3 — Multi-Hop Tool Orchestration
 **Goal:** Answer *"What is the temperature of the capital of Germany currently?"* — requires the LLM to chain: countries tool (capital lookup) → weather tool (temperature lookup).
 
-- [ ] No new components — this validates that Slices 1+2 compose correctly through the LLM's own tool-calling/reasoning.
+- [x] No new components — this validates that Slices 1+2 compose correctly through the LLM's own tool-calling/reasoning.
 - [x] Tune system prompt if needed so the model reliably chains tools instead of guessing an answer directly. *(not needed — already reliable, see task 3.2)*
 - [x] Manual verification with multiple runs (LLM tool-chaining can be inconsistent) — capture a working transcript.
-- [ ] If chaining proves unreliable with `qwen3:4b`, document the limitation rather than forcing it (per task's "explain why" allowance).
+- [x] If chaining proves unreliable with `qwen3:4b`, document the limitation rather than forcing it (per task's "explain why" allowance). *(not triggered — chaining was reliable; outcome documented in task 3.3 regardless, for the future README limitations section)*
 
 **Definition of done:** Question answered correctly via genuine two-tool chaining, or the limitation is documented if not achievable.
 

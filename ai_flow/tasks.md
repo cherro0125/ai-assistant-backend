@@ -184,9 +184,12 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
   *Done when:* repeated manual runs show materially improved chaining reliability, or the residual limitation is written up.
   *Notes:* Not needed — no-op. Task 3.1 already showed 5/5 reliable chaining with the existing per-tool system prompt (from tasks 1.6/2.5), so the "if needed" condition was never triggered. No changes made to `ChatClientConfig`.
 
-- **3.3 — Document outcome**
+- [x] **3.3 — Document outcome** ✅ *Done (2026-07-20)*
   Record the final behavior (reliable / partially reliable / not achievable) and rationale in `ai_flow/` notes, to feed into the README's "limitations" section later.
   *Done when:* the note exists and matches actual observed behavior.
+  *Notes:* **Verdict: reliable.** Multi-hop tool chaining ("What is the temperature of the capital of Germany currently?") works correctly with `qwen3:4b` and required no special prompting — the per-tool system prompt descriptions already in place from tasks 1.6/2.5 (one sentence each for `getCountryInfo` and `get-weather`, no explicit chaining/reasoning instructions) were sufficient for the model to sequence them correctly on its own. Task 3.1 observed 5/5 correct chainings (`getCountryInfo("Germany")` → `Berlin` → `get-weather("Berlin")` → real temperature), so task 3.2 (prompt tuning) turned out to be a no-op.
+
+  Residual caveat for the future README "Known limitations" section (task 7.4): reliability was about the *reasoning*, not response *latency* — this sandbox's Ollama is CPU-only (~16 tokens/sec observed) and occasionally OOM-killed under memory pressure during earlier testing (tasks 2.5/2.6), so multi-hop questions (two sequential tool round-trips plus a longer final generation) can take well over a minute and occasionally exceed a short client-side timeout, even though the underlying tool orchestration itself is correct every time it's given room to finish. Worth flagging as an infrastructure/hardware caveat, not a limitation of the tool-chaining approach itself.
 
 ## Slice 4 — RAG Knowledge Base (CDQ Fraud Guard)
 

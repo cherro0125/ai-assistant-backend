@@ -2,6 +2,8 @@
 .gradle
 build
 countries-mcp-server/build
+weather-mcp/node_modules
+weather-mcp/build
 .idea
 *.iml
 .DS_Store

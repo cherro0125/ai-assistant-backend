@@ -35,7 +35,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 
 - [x] Sign up for a free `weatherapi.com` API key; add `example.env` with `WEATHER_API_KEY=your_api_key_here` placeholder; add real key to git-ignored `.env`.
 - [x] Vendor/clone `mcp-weather` into the repo (e.g. `weather-mcp/` subdirectory).
-- [ ] Extend main app's Dockerfile to a multi-stage build: Node stage builds `mcp-weather`, final image has JRE + Node runtime.
+- [x] Extend main app's Dockerfile to a multi-stage build: Node stage builds `mcp-weather`, final image has JRE + Node runtime.
 - [ ] Configure Spring AI MCP client to spawn `mcp-weather` as a **stdio** subprocess on app startup, passing `WEATHER_API_KEY` through.
 - [ ] Register the weather tool with `ChatClient`; extend system prompt to mention it.
 - [ ] Manual verification: ask the Munich question via `chat.sh`, capture response.

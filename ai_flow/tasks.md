@@ -95,9 +95,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 2 — Weather MCP Integration + Munich Question
 
-- **2.1 — Obtain and configure `WEATHER_API_KEY`**
+- [x] **2.1 — Obtain and configure `WEATHER_API_KEY`** ✅ *Done (2026-07-20)*
   Sign up at weatherapi.com for a free key; create `example.env` with a placeholder; add the real key to a git-ignored `.env`.
   *Done when:* `.env` is populated and `example.env` is committed with a placeholder only.
+  *Notes:* You signed up for a free weatherapi.com account and added `WEATHER_API_KEY` to the git-ignored `.env`, same pattern as `COUNTRIES_API_KEY`. Added the `WEATHER_API_KEY=your_weatherapi_api_key_here` placeholder line to `example.env`. Verified live: `curl "https://api.weatherapi.com/v1/current.json?key=$WEATHER_API_KEY&q=Munich"` returned real current-conditions data for Munich (18.3°C, Sunny) — confirms the key is valid and the endpoint/response shape needed for task 2.4's tool implementation.
 
 - **2.2 — Vendor `mcp-weather` into the repo**
   Clone/copy the `mcp-weather` source into the repo (e.g. `weather-mcp/`), pinned to a known-working commit/version.

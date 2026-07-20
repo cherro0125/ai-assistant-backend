@@ -44,8 +44,8 @@ Concrete technology decisions for the AI Assistant, derived from `ai_flow/detail
 
 | Concern | Decision | Rationale |
 |---|---|---|
-| Runtime | Node.js (v16+) / TypeScript, per its own repo | Not a Java component — used as-is, git-cloned into the project (e.g. `mcp-weather/` submodule or plain subdirectory) |
-| Transport | stdio | This server has no documented HTTP/SSE mode — it's built for Claude Desktop's stdio-based MCP config, so the Spring AI MCP client connects to it as a stdio subprocess (`spring-ai-mcp-client` starter, stdio transport, spawning `npm start`) |
+| Runtime | Node.js (v16+) / TypeScript, per its own repo | Not a Java component — used as-is, vendored as a plain subdirectory (`weather-mcp/`, no git submodule) from `github.com/semdin/mcp-weather`, pinned to its only commit `8bb7bd1` |
+| Transport | stdio | This server has no documented HTTP/SSE mode — it's built for Claude Desktop's stdio-based MCP config, so the Spring AI MCP client connects to it as a stdio subprocess (`spring-ai-mcp-client` starter, stdio transport, spawning `npx tsx src/index.ts` directly — **not** `npm start`, which prints npm's own banner to stdout ahead of the JSON-RPC stream and breaks the handshake, confirmed in task 2.2) |
 | Packaging | Node.js installed inside the main app's Docker image (multi-stage build: Node stage builds/copies `mcp-weather`, final image has both JRE and Node runtime) | Keeps `docker compose up` as the single entry point instead of requiring a manually-started host process; the stdio subprocess is spawned by the Spring Boot app itself at runtime |
 | Backing weather API | weatherapi.com, via `WEATHER_API_KEY` env var, loaded from a git-ignored `.env` file (`example.env` committed with a placeholder) | Required by mcp-weather itself; README documents the free sign-up step |
 

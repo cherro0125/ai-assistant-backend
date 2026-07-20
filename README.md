@@ -24,6 +24,17 @@ The custom countries MCP server (`countries-mcp-server`) calls `restcountries.co
    COUNTRIES_API_KEY=your_restcountries_api_key_here
    ```
 
+### Weather MCP server (`weatherapi.com`)
+
+The vendored `weather-mcp` server (`weather-mcp/`, from https://github.com/semdin/mcp-weather) calls `weatherapi.com`'s current-conditions API, which requires a free account and API key.
+
+1. Go to https://www.weatherapi.com/ and sign up for a free account.
+2. Once logged in, your API key is shown on your account dashboard.
+3. Copy it into `.env`:
+   ```
+   WEATHER_API_KEY=your_weatherapi_api_key_here
+   ```
+
 ## How this project was built with Claude Code
 
 1. Initialized this repository locally and created it as a public GitHub repo (`ai-assistant-backend`) via the GitHub CLI.

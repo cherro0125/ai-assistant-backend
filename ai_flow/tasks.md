@@ -252,9 +252,32 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Confirmed the pre-existing, already-documented `AiAssistantApplicationTests`/`ChatControllerSmokeTest` MCP-dependency gap (found during task 4.5's review) is unaffected either way — ran the *full* `./gradlew test` suite both with all Docker services down (my 2 new tests pass, those 2 pre-existing ones correctly still fail the same pre-existing way) and with services back up (all 5 tests across 4 classes pass) — confirms this task didn't change that gap's status, which remains Slice 6's job.
 
-- **4.8 — Manual verification: CDQ Fraud Guard question**
+- [x] **4.8 — Manual verification: CDQ Fraud Guard question** ✅ *Done (2026-07-20)*
   Ask a CDQ Fraud Guard product question via `chat.sh`; confirm the answer reflects the scraped content.
   *Done when:* transcript captured and content-accurate.
+  *Notes:* Already had informal proof from task 4.6's testing (also captured in the README's "Answers to Required Questions"), but ran a fresh, dedicated verification for the record: `ollama`/`countries-mcp-server`/`postgres` via `docker compose up -d`, main app via `./gradlew bootRun --args='--logging.level.org.springframework.ai.chat.client.advisor=DEBUG'`. Startup log confirms ingestion correctly skipped (content already present from task 4.5).
+
+  Transcript:
+  ```
+  $ ./chat.sh "What does CDQ Fraud Guard do?"
+  CDQ Fraud Guard is a fraud detection and payment security tool designed to protect
+  businesses from payment fraud and inaccurate bank account information. It works by
+  verifying bank accounts against a shared database of validated accounts and known
+  fraud cases, providing real-time alerts, customizable trust scores, and fraud case
+  management features. Key functionalities include:
+
+  - Bank Account Verification: Ensures new accounts belong to legitimate businesses
+    before transactions.
+  - Trust Scores: Assigns risk levels (e.g., green/yellow) based on transaction history.
+  - Fraud Alerts: Warns users of potential fraud attacks using community-shared fraud data.
+  - Seamless Integration: Connects with existing financial systems via API to streamline
+    workflows.
+
+  The tool helps businesses reduce fraud risks, accelerate onboarding, and maintain
+  compliance while leveraging community-driven data for enhanced security.
+  ```
+
+  Proof of genuine RAG grounding, not hallucinated: debug log shows `qa_retrieved_documents=[Document{id='7b85f6e3-...', text='# CDQ Fraud Guard – Fraud Detection Tool...'}]` — the same real ingested chunk (matching its id from task 4.5's verification). Cross-checked every specific claim against `ai_flow/data/cdq_fraud_guard.md` directly: "Trust Score" with green/yellow risk levels, "Bank Account Verification" against a shared database, "community-shared data" on fraud cases — all real phrases/facts lifted straight from the source document, not generic or invented. **Slice 4 (RAG Knowledge Base) is now fully complete.**
 
 ## Slice 5 — Custom "Show Off" Questions
 

@@ -66,7 +66,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 - [x] Implement startup `ApplicationRunner`: if vector store empty, chunk `ai_flow/data/cdq_fraud_guard.md` with `TokenTextSplitter`, embed, store in `PgVectorStore`.
 - [x] Wire a RAG `Advisor` into `ChatClient` for retrieval-augmented prompts.
 - [x] Unit test for chunking logic; integration test (Testcontainers) verifying embed+retrieve round-trip.
-- [ ] Manual verification: ask a CDQ Fraud Guard product question, confirm the answer reflects the scraped content (not hallucinated).
+- [x] Manual verification: ask a CDQ Fraud Guard product question, confirm the answer reflects the scraped content (not hallucinated).
 
 **Definition of done:** A CDQ-specific question is answered correctly, grounded in the ingested document.
 

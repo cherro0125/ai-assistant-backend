@@ -61,7 +61,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 
 - [x] Add `app` service (built from the repo-root `Dockerfile`) to `docker-compose.yml` so `docker compose up --build` runs the entire stack.
 - [x] Add `postgres` (pgvector/pgvector:pg17) service to `docker-compose.yml`.
-- [ ] Add `spring-ai-starter-vector-store-pgvector`; configure `initialize-schema: true`.
+- [x] Add `spring-ai-starter-vector-store-pgvector`; configure `initialize-schema: true`.
 - [ ] Implement startup `ApplicationRunner`: if vector store empty, chunk `ai_flow/data/cdq_fraud_guard.md` with `TokenTextSplitter`, embed (qwen3:4b, fallback `nomic-embed-text`), store in `PgVectorStore`.
 - [ ] Wire a RAG `Advisor` into `ChatClient` for retrieval-augmented prompts.
 - [ ] Unit test for chunking logic; integration test (Testcontainers) verifying embed+retrieve round-trip.

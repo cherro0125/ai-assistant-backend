@@ -24,7 +24,7 @@ Concrete technology decisions for the AI Assistant, derived from `ai_flow/detail
 | Concern | Decision | Rationale |
 |---|---|---|
 | Vector DB | PostgreSQL via `pgvector/pgvector:pg17` Docker image | Per task requirement |
-| Vector store integration | Spring AI `PgVectorStore` (`spring-ai-vectordb-pgvector` starter) | Auto-handles schema creation (`initialize-schema: true`) and similarity search |
+| Vector store integration | Spring AI `PgVectorStore` (`spring-ai-starter-vector-store-pgvector` — verified in task 4.3; `spring-ai-vectordb-pgvector` is Initializr's dependency *id*, not the real Gradle artifact) | Auto-handles schema creation (`initialize-schema: true`) and similarity search |
 | Source document | `ai_flow/data/cdq_fraud_guard.md` (already scraped) | Plain text used for chunking + embedding |
 | Chunking | Spring AI `TokenTextSplitter` | Standard default splitter shipped with Spring AI, no need for a custom implementation |
 | Ingestion trigger | `ApplicationRunner` bean that ingests the document on startup if the vector store is empty | Keeps ingestion simple and idempotent without a separate CLI tool |

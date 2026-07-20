@@ -281,9 +281,14 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 5 — Custom "Show Off" Questions
 
-- **5.1 — Finalize custom question list**
+- [x] **5.1 — Finalize custom question list** ✅ *Done (2026-07-20)*
   Agree on 2-3 custom questions demonstrating combined tool/RAG use *(pending your input — not yet finalized)*.
   *Done when:* the question list is confirmed.
+  *Notes:* Confirmed, 3 questions, deliberately keeping country/city references explicit (e.g. "capital of Germany") rather than something like "CDQ's headquarters" — the scraped CDQ page doesn't mention a location, and having the model guess a real company's HQ would test its own knowledge accuracy rather than genuine tool orchestration.
+
+  1. **"What does CDQ Fraud Guard's Trust Score feature do, and what is the temperature currently in the capital of Germany?"** — RAG + countries + weather (3-way combo).
+  2. **"What is the population and capital of Japan?"** — countries only.
+  3. **"What are CDQ Fraud Guard's key protection features, and what is the temperature currently in Munich?"** — RAG + weather.
 
 - **5.2 — Manual verification of custom questions**
   Run each finalized custom question through `chat.sh`; capture transcripts.

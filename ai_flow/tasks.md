@@ -290,9 +290,43 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
   2. **"What is the population and capital of Japan?"** — countries only.
   3. **"What are CDQ Fraud Guard's key protection features, and what is the temperature currently in Munich?"** — RAG + weather.
 
-- **5.2 — Manual verification of custom questions**
+- [x] **5.2 — Manual verification of custom questions** ✅ *Done (2026-07-20)*
   Run each finalized custom question through `chat.sh`; capture transcripts.
   *Done when:* all custom questions produce correct, demonstrably multi-source answers.
+  *Notes:* Ran all 3 against the live stack (`ollama`/`countries-mcp-server`/`postgres` via Docker, main app via `./gradlew bootRun` with MCP + RAG advisor debug logging enabled). Question 1 (the 3-way combo) needed several attempts to get a clean run — see the environment gotcha below — the other two answered promptly.
+
+  Transcripts, each cross-checked against real debug-log evidence, not just plausible-looking text:
+  ```
+  $ ./chat.sh "What does CDQ Fraud Guard's Trust Score feature do, and what is the temperature currently in the capital of Germany?"
+  CDQ Fraud Guard's Trust Score feature assigns a numerical rating to bank accounts based on
+  the number of successful transactions, enabling businesses to customize risk thresholds
+  (e.g., "green" for high trust, "yellow" for moderate risk). This helps streamline onboarding
+  by reducing documentation needs and preventing fraud without manual verification.
+
+  The current temperature in Berlin (capital of Germany) is 16°C.
+  ```
+  Verified: `qa_retrieved_documents=[Document{id='7b85f6e3-...'}]` (the real CDQ chunk), `getCountryInfo` → `{"capital":"Berlin",...}`, `get-weather` → `"the weather in Berlin is currently: 16"` — all three sources genuinely fired and match the answer.
+
+  ```
+  $ ./chat.sh "What is the population and capital of Japan?"
+  The capital of Japan is Tokyo, and the population is 122,950,000.
+  ```
+  Verified: `getCountryInfo` → `{"name":"Japan","capital":"Tokyo","population":122950000,...}` — exact match.
+
+  ```
+  $ ./chat.sh "What are CDQ Fraud Guard's key protection features, and what is the temperature currently in Munich?"
+  CDQ Fraud Guard's key protection features include:
+  - Bank Account Verification
+  - Trust Score
+  - Payment Fraud Alerts
+  - Fraud Case Management
+  - Seamless Integration
+
+  The current temperature in Munich is 13.1°C.
+  ```
+  All 5 feature names are an exact match to `ai_flow/data/cdq_fraud_guard.md`'s "Key Features" list (not paraphrased/invented); `get-weather` → `"the weather in Munich is currently: 13.1"` confirms the weather half.
+
+  **Environment gotcha hit and resolved, not a defect in the app**: the first 3-way question (question 1) is heavy — RAG retrieval + 2 sequential tool calls + a long `qwen3:4b` "thinking" trace (thousands of tokens at only ~11-14 tok/s on this sandbox's CPU-only Ollama) — several client-side timeouts in a row compounded into a real backlog: each abandoned `chat.sh` client had left its underlying Ollama generation *still running server-side* (confirmed via `docker logs`, task IDs climbing across attempts), so each new retry queued up *behind* the previous one instead of replacing it, making things progressively worse. Fixed by killing the main app process outright (which Ollama's own log confirmed cancels its in-flight generation: `cancel task, id_task=...` → `all slots are idle`), restarting fresh, and sending exactly one clean, patient request — which then succeeded on the first real attempt (~90s). Lesson for future manual verification: for a slow/complex question, wait out one attempt fully (or kill+restart to clear the queue) rather than firing repeated retries, since each one silently adds to Ollama's backlog instead of replacing the one before it.
 
 ## Slice 6 — Test Suite Consolidation
 

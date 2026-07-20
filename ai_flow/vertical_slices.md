@@ -76,7 +76,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 **Goal:** Demonstrate combined tool use per task requirement.
 
 - [x] Finalize 2–3 custom questions — confirmed: (1) "What does CDQ Fraud Guard's Trust Score feature do, and what is the temperature currently in the capital of Germany?" (RAG+countries+weather), (2) "What is the population and capital of Japan?" (countries), (3) "What are CDQ Fraud Guard's key protection features, and what is the temperature currently in Munich?" (RAG+weather).
-- [ ] Manual verification and transcript capture for each.
+- [x] Manual verification and transcript capture for each.
 
 **Definition of done:** Custom questions answered and recorded, showing multi-source reasoning.
 

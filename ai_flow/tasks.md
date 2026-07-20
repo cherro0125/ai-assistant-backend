@@ -330,9 +330,15 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 6 — Test Suite Consolidation
 
-- **6.1 — Review/consolidate unit test coverage**
+- [x] **6.1 — Review/consolidate unit test coverage** ✅ *Done (2026-07-20)*
   Ensure countries-tool and RAG-chunking unit tests (from Slices 1 & 4) are complete and well-organized.
   *Done when:* coverage includes happy-path and at least one error/edge case per component.
+  *Notes:* Reviewed rather than added — both areas already satisfy the Done-when from their original Slice 1/4 work, no new tests needed:
+  - `CountriesApiClientTest` (WireMock): found (happy) + not-found → empty `Optional` (edge case).
+  - `CountryInfoToolTest` (Mockito): found (happy) + not-found → throws `IllegalArgumentException` (error case).
+  - `FraudGuardIngestionRunnerTest` (Mockito, task 4.7): ingests when store empty (happy) + skips when already populated (edge case).
+
+  Naming/organization already consistent and didn't need consolidation: `XxxTest` for pure unit tests, `XxxIT` for Testcontainers-based integration tests, `XxxLiveTest` for tests guarded behind a real API key (`@EnabledIfEnvironmentVariable`). Verified live, not just read: ran `./gradlew :countries-mcp-server:test :test --tests "com.cdq.aiassistant.rag.*"` — all 5 real tests green (`CountriesApiClientTest` 2/2, `CountryInfoToolTest` 2/2, `FraudGuardIngestionRunnerTest` 2/2, `FraudGuardIngestionRunnerIT` 1/1; `CountryInfoToolLiveTest` correctly self-skips without `COUNTRIES_API_KEY`).
 
 - **6.2 — Consolidate integration tests**
   Ensure the Testcontainers pgvector test and WireMock-based countries MCP server test are both present and reliable.

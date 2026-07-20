@@ -85,7 +85,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 ## Slice 6 — Test Suite Consolidation
 **Goal:** Satisfy "provide tests" requirement comprehensively, not just ad hoc per-slice tests.
 
-- [ ] Ensure unit test coverage: countries MCP tool logic, RAG chunking/ingestion logic.
+- [x] Ensure unit test coverage: countries MCP tool logic, RAG chunking/ingestion logic.
 - [ ] Ensure integration tests: Testcontainers-based pgvector store test.
 - [ ] Add WireMock-based integration tests for countries MCP server (stubbed restcountries.com) and, if feasible, a stubbed weatherapi.com test.
 - [ ] `./gradlew test` runs the full automated suite green, independent of live Ollama/MCP servers.

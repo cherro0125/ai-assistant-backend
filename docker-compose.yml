@@ -21,6 +21,16 @@ services:
     entrypoint: ["ollama", "pull", "qwen3:4b"]
     restart: "no"
 
+  ollama-pull-embedding-model:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: ["ollama", "pull", "nomic-embed-text"]
+    restart: "no"
+
   countries-mcp-server:
     build:
       context: .
@@ -68,6 +78,8 @@ services:
       ollama:
         condition: service_healthy
       ollama-pull-model:
+        condition: service_completed_successfully
+      ollama-pull-embedding-model:
         condition: service_completed_successfully
       countries-mcp-server:
         condition: service_healthy

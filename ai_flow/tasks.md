@@ -216,13 +216,18 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   **Known, expected gap for task 4.4**: since no embedding model is configured yet, `PgVectorStore.afterPropertiesSet()` tried to auto-detect vector dimensions by calling the embedding model, which hit Ollama's *default* embedding model (`mxbai-embed-large`, not `qwen3:4b` — Spring AI's Ollama embedding auto-config has its own default model name, separate from the chat model) — not pulled locally, got a real `HTTP 404`. Confirmed by reading `PgVectorStore`'s source (`spring-ai-pgvector-store-2.0.0-sources.jar`) that this failure is caught and logged as a `WARN`, falling back to `OPENAI_EMBEDDING_DIMENSION_SIZE` (1536) rather than crashing — which is exactly what happened, hence the table above having `vector(1536)`. This fallback dimension is very likely **wrong** for whichever embedding model task 4.4 actually settles on (`qwen3:4b` or the `nomic-embed-text` fallback both very plausibly produce different-sized vectors), and since `initialize-schema` uses `CREATE TABLE IF NOT EXISTS`, it won't auto-migrate — task 4.4 will likely need to either explicitly set `spring.ai.vectorstore.pgvector.dimensions` to match the real model, or drop/recreate `vector_store` once the actual embedding model is configured and reachable.
 
-- **4.4 — Ingestion runner for `cdq_fraud_guard.md`**
-  Implement an `ApplicationRunner` that, if the vector store is empty, chunks `ai_flow/data/cdq_fraud_guard.md` with `TokenTextSplitter`, embeds it, and stores it.
-  *Done when:* on first startup, the vector store contains the expected number of chunks; on subsequent startups, ingestion is skipped.
-
-- **4.5 — Embeddings model wiring (qwen3:4b, with fallback)**
+- [x] **4.4 — Embeddings model wiring (qwen3:4b, with fallback)** ✅ *Done (2026-07-20)*
   Configure Spring AI to use `qwen3:4b` for embeddings; if it fails to produce usable vectors, switch config to `nomic-embed-text` (pulled via Ollama) instead.
   *Done when:* embeddings are successfully generated and stored end-to-end with whichever model works.
+  *Notes:* Swapped with the ingestion runner (originally 4.4, now 4.5) — the ingestion runner's `vectorStore.add(...)` call genuinely depends on a working embedding model (unlike task 4.3's dimension-probe, which has a graceful fallback), so this needs to land first for 4.5 to be verifiable at all. First attempted in this slot originally, reverted per a task-ordering mixup, now done here properly.
+
+  **`qwen3:4b` confirmed unusable for embeddings, not just untried**: `ollama show qwen3:4b` lists capabilities `completion`, `tools`, `thinking` — no `embedding` — and a direct `curl .../api/embed` with `qwen3:4b` returns `"This server does not support embeddings. Start it with --embeddings"`. Not a transient issue; Ollama refuses based on the model's declared capabilities. Fell back to `nomic-embed-text` per the task's own allowance: pulled it via a new `ollama-pull-embedding-model` one-shot Compose service (mirrors `ollama-pull-model`'s pattern), confirmed real capability `embedding`, 768 dimensions, and a direct `/api/embed` call returns a real vector. Set `spring.ai.ollama.embedding.model: nomic-embed-text` in `application.yml`; wired the new pull service into `app`'s `depends_on` (`service_completed_successfully`) and `docker-compose.yml`.
+
+  Verified live end-to-end — not just "starts without the task 4.3 fallback warning" (though it does: no more `Failed to obtain the embedding dimensions` on startup, `vector_store.embedding` is now `vector(768)` matching `nomic-embed-text`'s real size). Wrote a temporary probe test (`VectorStoreProbeTest`, not committed — deleted after verifying) that autowired the real `VectorStore` bean, called `vectorStore.add(...)` with a real `Document`, then `similaritySearch(...)` for it — test passed (`tests="1" failures="0" errors="0"`), and confirmed the row genuinely landed in Postgres via `psql` (`SELECT content FROM vector_store` returned the exact text). This exercises the actual write path task 4.5's ingestion runner will use, not just the dimension-probe path task 4.3 already covered — table truncated back to empty afterward so task 4.5 starts from a clean slate.
+
+- **4.5 — Ingestion runner for `cdq_fraud_guard.md`**
+  Implement an `ApplicationRunner` that, if the vector store is empty, chunks `ai_flow/data/cdq_fraud_guard.md` with `TokenTextSplitter`, embeds it, and stores it.
+  *Done when:* on first startup, the vector store contains the expected number of chunks; on subsequent startups, ingestion is skipped.
 
 - **4.6 — RAG advisor wiring**
   Add a retrieval advisor to the main `ChatClient` so relevant chunks are injected into the prompt for matching queries.

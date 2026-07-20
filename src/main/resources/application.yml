@@ -13,6 +13,8 @@ spring:
       base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
       chat:
         model: qwen3:4b
+      embedding:
+        model: nomic-embed-text
     mcp:
       client:
         sse:

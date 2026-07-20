@@ -200,9 +200,12 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Verified live: `docker compose up --build -d` built and started all four containers with no manual steps; `app` container logs show both MCP handshakes succeeding purely over the Compose network (`serverInfo={name=semdin-weather-mcp,...}` for the stdio-spawned weather subprocess *inside* the container, and the countries SSE handshake). Ran both `./chat.sh "What is the capital city of Germany?"` → *"The capital city of Germany is Berlin."* and `./chat.sh "What is the temperature currently in Munich?"` → *"The current temperature in Munich is 21.3°C."* against the containerized app with zero manually-started local processes — confirms the full stack really does come up from `docker compose up --build` alone now. Updated the README's "Running the Application" section to lead with this simpler workflow.
 
-- **4.2 — Add pgvector service to Docker Compose**
+- [x] **4.2 — Add pgvector service to Docker Compose** ✅ *Done (2026-07-20)*
   Add a `postgres` service using `pgvector/pgvector:pg17` to `docker-compose.yml`.
   *Done when:* the container starts and the pgvector extension is available.
+  *Notes:* Added a `postgres` service (`pgvector/pgvector:pg17`, port 5432 published for local debugging convenience, `pg_isready` healthcheck, `postgres_data` named volume for persistence, matching the `ollama_data` pattern). Used fixed dev-only credentials (`postgres`/`postgres`, db `ai_assistant`) rather than the `.env`-sourced-secret pattern used for the real third-party API keys — this Postgres instance isn't a real external account/secret requiring sign-up, it's a local dev/CI database with no external exposure by default.
+
+  Verified live, not just "container starts": `docker compose up -d postgres` → healthy; `docker exec ... psql -c "CREATE EXTENSION IF NOT EXISTS vector; SELECT extname, extversion FROM pg_extension..."` → `vector | 0.8.5`, confirming the extension genuinely works, not just that the image built. Went a step further and smoke-tested actual vector functionality: created a `vector(3)` column, inserted two rows, ran a `<->` (L2 distance) similarity query, got the mathematically correct nearest-neighbor ordering back (distance `0` for the identical vector, `5.196...` for the other) — real proof the vector index/operator machinery works, not just that the extension is installed.
 
 - **4.3 — Add `PgVectorStore` dependency and config**
   Add `spring-ai-starter-vector-store-pgvector`; configure connection + `initialize-schema: true`.

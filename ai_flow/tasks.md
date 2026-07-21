@@ -340,9 +340,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Naming/organization already consistent and didn't need consolidation: `XxxTest` for pure unit tests, `XxxIT` for Testcontainers-based integration tests, `XxxLiveTest` for tests guarded behind a real API key (`@EnabledIfEnvironmentVariable`). Verified live, not just read: ran `./gradlew :countries-mcp-server:test :test --tests "com.cdq.aiassistant.rag.*"` — all 5 real tests green (`CountriesApiClientTest` 2/2, `CountryInfoToolTest` 2/2, `FraudGuardIngestionRunnerTest` 2/2, `FraudGuardIngestionRunnerIT` 1/1; `CountryInfoToolLiveTest` correctly self-skips without `COUNTRIES_API_KEY`).
 
-- **6.2 — Consolidate integration tests**
+- [x] **6.2 — Consolidate integration tests** ✅ *Done (2026-07-21)*
   Ensure the Testcontainers pgvector test and WireMock-based countries MCP server test are both present and reliable.
   *Done when:* both run repeatably without flakiness.
+  *Notes:* Both already exist from earlier slices (`CountriesApiClientTest` from task 1.3, `FraudGuardIngestionRunnerIT` from task 4.7) — this was a reliability check, not new test-writing. Ran each with `--rerun` (bypassing Gradle's UP-TO-DATE cache, forcing genuine re-execution) 3 times in isolation, then once more together in the same suite run to rule out cross-test interference (shared ports, Docker resource contention): 7 total executions, all green, consistent timing (~7s WireMock, ~14s Testcontainers). Checked for resource leaks afterward — `docker ps -a` shows no orphaned Postgres test containers, only Testcontainers' own Ryuk reaper (which self-removes on JVM exit), confirming clean teardown every run.
 
 - **6.3 — Full suite run**
   Run `./gradlew test` end-to-end with no live Ollama/MCP dependency required.

@@ -89,6 +89,17 @@ Useful if you're iterating on the Java code and don't want to rebuild the Docker
    ./chat.sh "What is the capital city of Germany?"
    ```
 
+## Running the Tests
+
+```sh
+./gradlew test
+```
+
+Runs the full suite standalone — no manually-started `docker compose` services needed. Docker is still required, though: the main app's integration tests use Testcontainers to spin up their own throwaway Ollama and `pgvector/pgvector:pg17` Postgres containers, and the countries MCP server's tests use WireMock (no Docker needed there).
+
+- First run bakes a local Ollama image with `qwen3:4b` and `nomic-embed-text` pre-pulled (a few minutes); later runs reuse it (seconds).
+- `COUNTRIES_API_KEY` isn't required for tests — the one test that calls the real restcountries.com API self-skips without it, so the suite still passes green either way.
+
 ## Answers to Required Questions
 
 Real transcripts captured via `./chat.sh` (i.e. the actual `/chat` endpoint) against the live stack, backed by real tool calls (`getCountryInfo`/`get-weather` MCP tools) and, for the last one, the RAG-grounded CDQ Fraud Guard content — not hand-written or hallucinated. Weather answers reflect live conditions at the time they were captured (2026-07-20) and will differ on a later run.
@@ -105,7 +116,7 @@ Real transcripts captured via `./chat.sh` (i.e. the actual `/chat` endpoint) aga
 **What is the temperature of the capital of Germany currently?**
 > The capital of Germany is Berlin. The current temperature in Berlin is **17 degrees**.
 
-**Custom question — What does CDQ Fraud Guard do?** (demonstrates the RAG knowledge base described in "Setup — API Keys" and `ai_flow/data/cdq_fraud_guard.md`; the full list of "show off" custom questions is still being finalized, see `ai_flow/tasks.md` task 5.1)
+**Custom question — What does CDQ Fraud Guard do?** (demonstrates the RAG knowledge base described in "Setup — API Keys" and `ai_flow/data/cdq_fraud_guard.md`; this is one of 3 finalized "show off" custom questions combining RAG, the countries tool, and the weather tool — see `ai_flow/tasks.md` tasks 5.1/5.2 for the full list and transcripts)
 > **CDQ Fraud Guard** is a fraud detection tool designed to protect businesses from payment fraud and inaccurate bank account information. It works by:
 >
 > 1. **Verifying bank accounts** against a shared database of validated accounts to prevent fraudulent transactions.

@@ -360,9 +360,10 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
 ## Slice 7 — Documentation & Final Answers
 
-- **7.1 — Write README setup/run instructions**
+- [x] **7.1 — Write README setup/run instructions** ✅ *Done (2026-07-21)*
   Document prerequisites (Docker, Gradle, Java 21), `.env` setup incl. weatherapi.com sign-up steps, `docker compose up`, and test execution.
   *Done when:* a reviewer following the README alone can run the stack from a fresh clone.
+  *Notes:* Most of this was already covered incrementally across earlier tasks (task 2.1's "Setup — API Keys" section, task 4.1's "Running the Application" section with both the Docker Compose and local-Gradle paths and their respective prerequisites) — the one genuine gap was test execution, never documented anywhere. Added a "Running the Tests" section: the `./gradlew test` command, that Docker is still required (Testcontainers for the app module, WireMock — no Docker — for countries-mcp-server), the first-run image-baking cost, and that `COUNTRIES_API_KEY` isn't required (the guarded live test self-skips). Also fixed a stale note in the "Answers to Required Questions" section that still said the custom question list was "still being finalized" — tasks 5.1/5.2 had already finalized and verified it by this point.
 
 - **7.2 — Write `answers.md`**
   Record final transcripts for all 4 required questions plus the finalized custom questions.

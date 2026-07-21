@@ -97,7 +97,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 ## Slice 7 — Documentation & Final Answers
 **Goal:** Satisfy all "Task requirements" from `plan.md`.
 
-- [ ] `README.md`: prerequisites, Docker/Ollama/Gradle setup, `.env` setup incl. weatherapi.com sign-up steps, how to run (`docker compose up`), how to run tests, how to use `chat.sh`.
+- [x] `README.md`: prerequisites, Docker/Ollama/Gradle setup, `.env` setup incl. weatherapi.com sign-up steps, how to run (`docker compose up`), how to run tests, how to use `chat.sh`.
 - [ ] `answers.md` (or README section): captured real transcripts for all 4 required questions + custom questions.
 - [ ] "How AI was used" section documenting the Claude Code collaboration (planning docs in `ai_flow/`, code generation, etc.).
 - [ ] "Known limitations / out of scope" section (long/short-term memory excluded per task; any multi-hop tool-chaining caveats from Slice 3; any embeddings fallback triggered in Slice 4).

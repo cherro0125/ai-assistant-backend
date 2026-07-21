@@ -88,7 +88,7 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 - [x] Ensure unit test coverage: countries MCP tool logic, RAG chunking/ingestion logic.
 - [x] Ensure integration tests: Testcontainers-based pgvector store test.
 - [x] Add WireMock-based integration tests for countries MCP server (stubbed restcountries.com) and, if feasible, a stubbed weatherapi.com test. *(countries MCP server done in task 1.3; weatherapi.com stub not pursued — `weather-mcp` is vendored Node.js/TypeScript, outside this project's Java/Gradle test suite, and task 6.2's own scope doesn't call for it)*
-- [ ] `./gradlew test` runs the full automated suite green, independent of live Ollama/MCP servers.
+- [x] `./gradlew test` runs the full automated suite green, independent of live Ollama/MCP servers.
 
 **Definition of done:** `./gradlew test` passes standalone (no live external dependencies needed for automated tests).
 

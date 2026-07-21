@@ -9,9 +9,14 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRe
 import org.springframework.context.annotation.Import;
 
 import com.cdq.aiassistant.TestcontainersConfiguration;
+import com.cdq.aiassistant.WithoutMcpClients;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TestcontainersConfiguration provides both Ollama and Postgres: pgvector needs a real
+// database since FraudGuardIngestionRunner runs on every startup (including this test's
+// context load) and queries the vector store.
+@WithoutMcpClients
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestRestTemplate

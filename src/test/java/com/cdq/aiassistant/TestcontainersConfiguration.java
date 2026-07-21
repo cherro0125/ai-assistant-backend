@@ -9,13 +9,15 @@ import org.springframework.context.annotation.Bean;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.ollama.OllamaContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * Provides an Ollama container for tests, self-contained (no manually-run
- * `docker compose up` required). The qwen3:4b and nomic-embed-text models are
- * pulled once and committed to a local image tag so subsequent test runs reuse
- * it instead of re-pulling every time; the very first run is slow.
+ * Provides Ollama and Postgres containers for tests, self-contained (no
+ * manually-run `docker compose up` required). The qwen3:4b and
+ * nomic-embed-text models are pulled once and committed to a local image tag
+ * so subsequent test runs reuse it instead of re-pulling every time; the very
+ * first run is slow.
  */
 @TestConfiguration(proxyBeanMethods = false)
 public class TestcontainersConfiguration {
@@ -24,6 +26,12 @@ public class TestcontainersConfiguration {
 	private static final String CHAT_MODEL = "qwen3:4b";
 	private static final String EMBEDDING_MODEL = "nomic-embed-text";
 	private static final String BAKED_IMAGE = "ai-assistant-ollama-qwen3-4b-nomic-embed-text:latest";
+
+	@Bean
+	@ServiceConnection
+	PostgreSQLContainer postgresContainer() {
+		return new PostgreSQLContainer(DockerImageName.parse("pgvector/pgvector:pg17").asCompatibleSubstituteFor("postgres"));
+	}
 
 	@Bean
 	@ServiceConnection

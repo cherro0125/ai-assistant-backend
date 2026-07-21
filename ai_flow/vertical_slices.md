@@ -101,6 +101,6 @@ Based on `ai_flow/detailed_plan.md` and `ai_flow/tech_stack.md`. Each slice is a
 - [x] `answers.md` (or README section): captured real transcripts for all 4 required questions + custom questions.
 - [x] "How AI was used" section documenting the Claude Code collaboration (planning docs in `ai_flow/`, code generation, etc.).
 - [x] "Known limitations / out of scope" section (long/short-term memory excluded per task; any multi-hop tool-chaining caveats from Slice 3; any embeddings fallback triggered in Slice 4).
-- [ ] Final push to `ai-assistant-backend`.
+- [x] Final push to `ai-assistant-backend`.
 
 **Definition of done:** All "Task requirements" from `plan.md` are verifiably satisfied by a reviewer following the README alone.

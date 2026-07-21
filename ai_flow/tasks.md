@@ -388,6 +388,9 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Deliberately left out the shared/concurrent-environment issues discovered in tasks 6.3 and 7.2 (a `readme_to_recover` database appearing, a Postgres password change) — those are properties of this specific sandbox session, not the shipped application, so they don't belong in a "known limitations" section about the AI assistant itself.
 
-- **7.5 — Final push**
+- [x] **7.5 — Final push** ✅ *Done (2026-07-21)*
   Push all commits to `ai-assistant-backend`.
   *Done when:* remote `main` reflects the final state and CI/tests (if any) pass.
+  *Notes:* Verified rather than assumed: `git fetch origin` + comparing `git log -1` on local `main` vs `origin/main` — both at `93af9c7`, in sync, nothing uncommitted (`git status` clean). No `.github/` directory exists, so there's no CI pipeline to check — confirmed by looking, not by assuming. Ran `./gradlew build` (both modules) as the final gate — green, consistent with the standalone-in-a-clean-environment proof already established in tasks 6.3 and 7.1.
+
+  **All 39 tasks across all 8 slices are now complete.** The 4 required questions and 3 custom questions all have real, verified transcripts in `answers.md`; the full test suite passes standalone with no live Ollama/MCP dependency; the README documents setup, running, testing, the answers, known limitations, and how AI was used across both planning and implementation.

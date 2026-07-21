@@ -381,9 +381,12 @@ Detailed, actionable tasks grouped by vertical slice (see `ai_flow/vertical_slic
 
   Caught and fixed one inaccuracy in my own first draft during review: initially described the `nomic-embed-text` fallback choice as a human decision point, but that was actually pre-specified in the task's own Definition of Done from planning, not a real-time call — replaced with three examples that genuinely were decided by the human during implementation.
 
-- **7.4 — "Known limitations" section**
+- [x] **7.4 — "Known limitations" section** ✅ *Done (2026-07-21)*
   Document out-of-scope items (memory) and any unresolved issues from Slice 3 (tool-chaining reliability) or Slice 4 (embeddings fallback triggered or not).
   *Done when:* section reflects actual final system behavior, not assumptions.
+  *Notes:* Added a "Known Limitations" section to `README.md`, citing the exact verdicts already recorded elsewhere rather than re-deciding them: no conversation memory (explicit out-of-scope item from `plan.md`), `qwen3:4b`'s confirmed lack of embedding capability and the `nomic-embed-text` fallback (task 4.4's finding, anticipated by the original plan), and multi-hop tool chaining's "reliable but can be slow on this hardware" verdict (task 3.3's own note, written specifically to feed this section). Also included two smaller, genuine gaps found along the way that don't have an existing "limitations" home: `weather-mcp` has no automated test coverage (task 6.2 — it's vendored, unmodified Node.js/TypeScript, outside the Java/Gradle test suite) and `chat.sh`'s JSON-handling edge cases (task 0.4 — doesn't round-trip embedded literal newlines or `\uXXXX` escapes).
+
+  Deliberately left out the shared/concurrent-environment issues discovered in tasks 6.3 and 7.2 (a `readme_to_recover` database appearing, a Postgres password change) — those are properties of this specific sandbox session, not the shipped application, so they don't belong in a "known limitations" section about the AI assistant itself.
 
 - **7.5 — Final push**
   Push all commits to `ai-assistant-backend`.

@@ -104,6 +104,15 @@ Runs the full suite standalone — no manually-started `docker compose` services
 
 See [`answers.md`](answers.md) for real, captured transcripts of the 4 required questions plus the 3 finalized custom "show off" questions — each backed by real MCP tool calls and/or RAG retrieval, not hand-written or hallucinated.
 
+## Known Limitations
+
+- **No conversation memory.** Out of scope per the original task requirements — each `/chat` call is stateless; there's no short- or long-term memory of prior turns.
+- **`qwen3:4b` cannot produce embeddings.** Confirmed via `ollama show qwen3:4b` (capabilities: `completion`, `tools`, `thinking` — no `embedding`) and a direct `/api/embed` call, which Ollama refuses outright based on the model's declared capabilities, not a transient issue. The RAG knowledge base uses `nomic-embed-text` instead, exactly as anticipated by the original task plan's fallback allowance (see `ai_flow/tasks.md` task 4.4).
+- **Multi-hop tool chaining is reliable, but can be slow.** "What is the temperature of the capital of Germany currently?" (chaining the countries tool into the weather tool) was 5/5 correct across manual testing (`ai_flow/tasks.md` task 3.1) with no special prompting needed. The caveat is response *latency*, not correctness: on constrained, CPU-only Ollama hardware, a question needing two sequential tool calls plus a longer final generation can take well over a minute — an infrastructure/hardware characteristic, not a limitation of the chaining approach itself.
+- **The RAG knowledge base is a single document.** Only the CDQ Fraud Guard product page (`ai_flow/data/cdq_fraud_guard.md`) is ingested — this is a focused demo of retrieval-augmented generation, not a general-purpose knowledge base.
+- **`weather-mcp` has no automated test coverage.** It's vendored, unmodified Node.js/TypeScript (`weather-mcp/`, from an external GitHub repo), outside this project's Java/Gradle test suite — verified manually instead (`ai_flow/tasks.md` task 2.2, and the required/custom question transcripts in `answers.md`).
+- **`chat.sh` has known limitations in its JSON handling.** Quotes and backslashes in a question/answer round-trip correctly, but embedded literal newlines or `\uXXXX` escapes in the answer don't (`ai_flow/tasks.md` task 0.4). Doesn't affect the `/chat` endpoint itself, which returns standard JSON.
+
 ## How this project was built with Claude Code
 
 1. Initialized this repository locally and created it as a public GitHub repo (`ai-assistant-backend`) via the GitHub CLI.
